@@ -1,9 +1,10 @@
-package org.jing.project1;
+package org.jing.project;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -77,6 +78,21 @@ public class Main {
                 });
     }
 
+    public static void PrintWithSort(DB mongodb){
+        Scanner cin = new Scanner(System.in);
+        System.out.print("請輸入要依據什麼排序");
+        String sort = cin.next();
+        Bson projection = Projections.fields(
+                Projections.include("name","age"),
+                Projections.excludeId()
+        );
+        mongodb.getCollection().find().sort(Sorts.ascending(sort)).projection(projection).forEach(
+                a->{
+                    JSONObject jsonObject = JSONObject.parseObject(((Document)a).toJson());
+                    System.out.println(jsonObject);
+                });
+    }
+
     public static void main(String[] args) {
         Scanner cin = new Scanner(System.in);
         DB mongodb = new DB("localhost", "27017");
@@ -93,6 +109,7 @@ public class Main {
                     PrintAll(mongodb);
                     break;
                 case 3:
+                    PrintWithSort(mongodb);
                     break;
                 case -1:
                     break;

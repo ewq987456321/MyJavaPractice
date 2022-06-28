@@ -1,8 +1,8 @@
-package org.jing.project1;
+package org.jing.project;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoTimeoutException;
+//import com.mongodb.MongoTimeoutException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -35,7 +35,7 @@ class DB {
             mongoClient.startSession();
             System.out.println("連接成功host: " + this.Host + mongoClient);
             return mongoClient;
-        } catch (MongoTimeoutException e) {
+        } catch (Exception e) {
             System.out.println("連接失敗");
             return null;
         }
