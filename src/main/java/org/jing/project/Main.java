@@ -9,6 +9,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -78,19 +79,35 @@ public class Main {
                 });
     }
 
-    public static void PrintWithSort(DB mongodb){
+    public static void PrintWithSort(DB mongodb) {
         Scanner cin = new Scanner(System.in);
         System.out.print("請輸入要依據什麼排序");
         String sort = cin.next();
         Bson projection = Projections.fields(
-                Projections.include("name","age"),
+                Projections.include("name", "age"),
                 Projections.excludeId()
         );
         mongodb.getCollection().find().sort(Sorts.ascending(sort)).projection(projection).forEach(
-                a->{
-                    JSONObject jsonObject = JSONObject.parseObject(((Document)a).toJson());
+                a -> {
+                    JSONObject jsonObject = JSONObject.parseObject(((Document) a).toJson());
                     System.out.println(jsonObject);
                 });
+    }
+
+    public static void InsertDocument(DB mongodb) {
+        String key,value;
+        Scanner cin = new Scanner(System.in);
+        Document doc = new Document();
+        do{
+            System.out.print("請輸入key(欲結束輸入請輸入 null: ");
+            key = cin.next();
+            if(!Objects.equals(key,"null")){
+                System.out.print("請輸入value: ");
+                value = cin.next();
+                doc.append(key,value);
+            }
+        }while(!Objects.equals(key,"null"));
+        mongodb.getCollection().insertOne(doc);
     }
 
     public static void main(String[] args) {
@@ -110,6 +127,9 @@ public class Main {
                     break;
                 case 3:
                     PrintWithSort(mongodb);
+                    break;
+                case 4:
+                    InsertDocument(mongodb);
                     break;
                 case -1:
                     break;
