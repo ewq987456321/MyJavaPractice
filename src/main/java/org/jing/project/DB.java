@@ -2,7 +2,6 @@ package org.jing.project;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-//import com.mongodb.MongoTimeoutException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -30,7 +29,7 @@ class DB {
                         builder.readTimeout(3, SECONDS);
                     })
                     .applyToClusterSettings(builder -> builder.serverSelectionTimeout(3, SECONDS))
-                    .applyConnectionString(new ConnectionString("mongodb://"+this.Host+":"+this.Port))
+                    .applyConnectionString(new ConnectionString("mongodb://" + this.Host + ":" + this.Port))
                     .build());
             mongoClient.startSession();
             System.out.println("連接成功host: " + this.Host + mongoClient);
