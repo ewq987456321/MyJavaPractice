@@ -15,14 +15,14 @@ public class Main {
         resetHost(mongodb);
         int func;
         do {
-            System.out.print("請選擇功能 1)重新設定資料庫 2)查詢所有資料 3)以年齡排序: ");
+            System.out.print("請選擇功能 1)重新設定資料庫 2)資料相關 3)以年齡排序: ");
             func = cin.nextInt();
             switch (func) {
                 case 1:
                     DBSetting.main(mongodb);
                     break;
                 case 2:
-                    PrintAll(mongodb);
+                    Collection.main(mongodb);
                     break;
                 case 3:
                     PrintWithSort(mongodb);

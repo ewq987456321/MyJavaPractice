@@ -14,6 +14,24 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Collection {
+    public static void main(DB mongodb) {
+        Scanner cin = new Scanner(System.in);
+        int func;
+        do {
+            System.out.print("請選擇 1)印出全部 2)印出全部(排序) 3)新增資料 4)修改資料 -1)上一頁: ");
+            func = cin.nextInt();
+            switch (func) {
+                case 1 -> PrintAll(mongodb);
+                case 2 -> PrintWithSort(mongodb);
+                case 3 -> InsertDocument(mongodb);
+                case 4 -> UpdateDocument(mongodb);
+                case -1 -> {
+                }
+                default -> System.out.println("輸入錯誤！");
+            }
+        } while (func != -1);
+    }
+
     public static void PrintAll(DB mongodb) {
         Bson FieldSetting = Projections.fields(
                 Projections.include("name", "age"),

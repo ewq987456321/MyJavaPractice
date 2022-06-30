@@ -1,6 +1,7 @@
 package org.jing.project;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mongodb.MongoCommandException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -12,14 +13,26 @@ public class DBSetting {
     public static void main(DB mongodb) {
         Scanner cin = new Scanner(System.in);
         int func;
-        System.out.print("請選擇: 1)重設伺服器(Server) 2)重設資料庫(database) 3)重設集合(Collection): ");
-        func = cin.nextInt();
-        switch (func) {
-            case 1 -> resetHost(mongodb, true);
-            case 2 -> resetDatabase(mongodb);
-            case 3 -> resetCollection(mongodb);
-            default -> System.out.println("輸入錯誤！");
-        }
+        do {
+            System.out.print("請選擇: 1)重設伺服器(Server) 2)重設資料庫(database) 3)重設集合(Collection) -1)上一頁: ");
+            func = cin.nextInt();
+            switch (func) {
+                case 1 -> resetHost(mongodb, true);
+                case 2 -> resetDatabase(mongodb);
+                case 3 -> resetCollection(mongodb);
+                case 4 -> {
+                    try {
+                        addCollection(mongodb);
+                    } catch (MongoCommandException e) {
+                        System.out.println("新增失敗");
+                        System.out.println(e.getErrorMessage());
+                    }
+                }
+                case -1 -> {
+                }
+                default -> System.out.println("輸入錯誤！");
+            }
+        } while (func != -1);
     }
 
     public static void resetHost(DB mongodb, boolean... reset) {
@@ -81,5 +94,11 @@ public class DBSetting {
         while (list_index < 0 || list_index > JsonList2.size() - 1);
         collection = mongodb.getDatabase().getCollection(JsonList2.get(list_index).getString("name"));
         mongodb.setCollection(collection);
+    }
+
+    public static void addCollection(DB mongodb) {
+        Scanner cin = new Scanner(System.in);
+        System.out.print("請輸入要新增的名稱: ");
+        mongodb.getDatabase().createCollection(cin.next());
     }
 }
