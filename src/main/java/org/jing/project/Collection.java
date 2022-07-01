@@ -2,9 +2,12 @@ package org.jing.project;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
+
+import com.mongodb.MongoCommandException;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -13,18 +16,21 @@ import org.bson.types.ObjectId;
 import java.util.Objects;
 import java.util.Scanner;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class Collection {
     public static void main(DB mongodb) {
         Scanner cin = new Scanner(System.in);
         int func;
         do {
-            System.out.print("請選擇 1)印出全部 2)印出全部(排序) 3)新增資料 4)修改資料 -1)上一頁: ");
+            System.out.print("請選擇 1)印出全部 2)印出全部(排序) 3)新增資料 4)修改資料 5)刪除資料 -1)上一頁: ");
             func = cin.nextInt();
             switch (func) {
                 case 1 -> PrintAll(mongodb);
                 case 2 -> PrintWithSort(mongodb);
                 case 3 -> InsertDocument(mongodb);
                 case 4 -> UpdateDocument(mongodb);
+                case 5 -> DelDocument(mongodb);
                 case -1 -> {
                 }
                 default -> System.out.println("輸入錯誤！");
@@ -124,4 +130,26 @@ public class Collection {
             }
         }
     }
+
+    public static void DelDocument(DB mongodb) {
+        Scanner cin = new Scanner(System.in);
+        System.out.print("請輸入要刪除的key: ");
+        String key, value;
+        key = cin.next();
+        System.out.print("請輸入要刪除的value: ");
+        value = cin.next();
+        Bson query = eq(key, value);
+        System.out.println("以下為搜尋到的資料");
+        mongodb.getCollection().find(query).iterator().forEachRemaining(System.out::println);
+        System.out.print("確定要刪除嗎(y/n): ");
+        if (!Objects.equals(cin.next(), "n")) {
+            try {
+                DeleteResult result = mongodb.getCollection().deleteMany(query);
+                System.out.println("已刪除" + result.getDeletedCount() + "個資料");
+            } catch (MongoCommandException e) {
+                System.out.println(e.getErrorMessage());
+            }
+        }
+    }
+
 }
