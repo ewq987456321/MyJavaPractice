@@ -73,5 +73,9 @@ class DB {
     public MongoCollection getCollection() {
         return Collection;
     }
+
+    public MongoClient getClient() {
+        return client;
+    }
 }
 

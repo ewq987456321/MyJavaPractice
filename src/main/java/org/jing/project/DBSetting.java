@@ -18,16 +18,10 @@ public class DBSetting {
             func = cin.nextInt();
             switch (func) {
                 case 1 -> resetHost(mongodb, true);
-                case 2 -> resetDatabase(mongodb);
-                case 3 -> resetCollection(mongodb);
-                case 4 -> {
-                    try {
-                        addCollection(mongodb);
-                    } catch (MongoCommandException e) {
-                        System.out.println("新增失敗");
-                        System.out.println(e.getErrorMessage());
-                    }
-                }
+                case 2 -> reChooseDatabase(mongodb);
+                case 3 -> reChooseCollection(mongodb);
+                case 4 -> addCollection(mongodb);
+                case 5 -> addDatabase(mongodb);
                 case -1 -> {
                 }
                 default -> System.out.println("輸入錯誤！");
@@ -50,10 +44,10 @@ public class DBSetting {
             mongodb.setPort(cin.next());
             mongodb.client = mongodb.connect();
         }
-        resetDatabase(mongodb);
+        reChooseDatabase(mongodb);
     }
 
-    public static void resetDatabase(DB mongodb) {
+    public static void reChooseDatabase(DB mongodb) {
         Scanner cin = new Scanner(System.in);
         int list_index = 0;
         System.out.println("請選擇要連接的資料庫: ");
@@ -74,10 +68,10 @@ public class DBSetting {
         database = mongodb.client.getDatabase(JsonList.get(list_index).getString("name"));
         mongodb.setDatabase(database);
 
-        resetCollection(mongodb);
+        reChooseCollection(mongodb);
     }
 
-    public static void resetCollection(DB mongodb) {
+    public static void reChooseCollection(DB mongodb) {
         Scanner cin = new Scanner(System.in);
         int list_index;
         MongoCollection<Document> collection;
@@ -99,6 +93,22 @@ public class DBSetting {
     public static void addCollection(DB mongodb) {
         Scanner cin = new Scanner(System.in);
         System.out.print("請輸入要新增的名稱: ");
-        mongodb.getDatabase().createCollection(cin.next());
+        try {
+            mongodb.getDatabase().createCollection(cin.next());
+        } catch (MongoCommandException e) {
+            System.out.println("新增失敗");
+            System.out.println(e.getErrorMessage());
+        }
+    }
+
+    public static void addDatabase(DB mongodb) {
+        Scanner cin = new Scanner(System.in);
+        System.out.print("請輸入要新增的Database名稱(需新增資料後才會實際建立): ");
+        try {
+            mongodb.getClient().getDatabase(cin.next());
+        } catch (MongoCommandException e) {
+            System.out.println("新增失敗");
+            System.out.println(e.getErrorMessage());
+        }
     }
 }
